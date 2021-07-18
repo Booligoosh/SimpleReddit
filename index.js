@@ -24,33 +24,6 @@ addEventListener("fetch", (event) => {
 async function handleRequest(request) {
   const ORIGIN = "https://simplereddit.ethan.link";
 
-  const GLOBAL_STYLES = `
-  * {
-    box-sizing: border-box;
-    /*transition-property: color, background-color, border-color;
-    transition-duration: 200ms;
-    transition-timing-function: ease-in-out;*/
-  }
-  :root {
-    --bg: hsl(0,0%,100%);
-    --color: hsl(0,0%,20%);
-    --border-color: hsl(0,0%,95%);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: hsl(0,0%,20%);
-      --color: hsl(0,0%,100%);
-      --border-color: hsl(0,0%,30%);
-    }
-  }
-  body {
-    font-family: 'Helvetica Neue', sans-serif;
-    margin: 0;
-    color: var(--color);
-    background-color: var(--bg);
-    filter: grayscale(1);
-  }`;
-
   const { pathname, searchParams } = new URL(request.url);
 
   if (pathname === "/favicon.ico") {
@@ -128,57 +101,7 @@ async function handleRequest(request) {
             .join("")}
           <div class="end">Ok, stop reading reddit now and go for a walk :)</div>
         </main>
-      </body>
-      ${
-        searchParams.get("style")
-          ? `
-      <style>
-      ${GLOBAL_STYLES}
-      main {
-        width: 700px;
-        max-width: 100%;
-        margin: 0 auto;
-        padding: 4rem 1rem;
-      }
-      .title {
-        margin: 0;
-      }
-      .item-title {
-        font-size: 1.1rem;
-        margin-bottom: .2rem;
-        display: block;
-        color: inherit;
-        text-decoration: none;
-      }
-      .item-meta {
-        opacity: .5;
-        font-size: .9rem;
-      }
-      details {
-        margin-top: .5rem;
-      }
-      summary {
-        cursor: pointer;
-      }
-      details a {
-        color: inherit;
-      }
-      hr {
-        border: none;
-        border-top: 1px solid var(--border-color);
-        margin: 1rem 0;
-      }
-      .end {
-        margin-top: 4rem;
-        opacity: .5;
-        text-align: center;
-        font-style: italic;
-      }
-      </style>
-      `
-          : ""
-      }
-      `;
+      </body>`;
       return new Response(html, {
         headers: {
           "Content-Type": "text/html; charset=utf-8",
@@ -210,48 +133,7 @@ async function handleRequest(request) {
         <br><br>
         <p><small>Made by <a href="https://ethan.link" target="_blank">Ethan</a></small></p>
       </center>
-    </body>
-    ${
-      searchParams.get("style")
-        ? `
-    <style>
-    ${GLOBAL_STYLES}
-    body {
-      padding: 2rem;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    form {
-      font-size: 1.1rem;
-      text-align: center;
-    }
-    input {
-      color: var(--color);
-      background-color: var(--bg);
-      border: 1px solid var(--border-color);
-      font: inherit;
-      padding: .2rem .4rem;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 1rem;
-      font: inherit;
-      color: inherit;
-      font-size: 1rem;
-      background-color: var(--border-color);
-      /*border: 1px solid var(--color);*/
-      padding: .2rem .4rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    </style>
-    `
-        : ""
-    }
-    `;
+    </body>`;
     return new Response(html, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
