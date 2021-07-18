@@ -1,4 +1,3 @@
-const ORIGIN = "https://simplereddit.ethan.link";
 const CSP =
   "default-src 'none'; img-src https://simplereddit.ethan.link/favicon.ico";
 
@@ -29,7 +28,7 @@ async function handleRequest(request) {
   // Home page form submissions
   if (pathname === "/form") {
     return Response.redirect(
-      `${ORIGIN}/r/${url.searchParams.get("subreddit")}`,
+      `${url.origin}/r/${url.searchParams.get("subreddit")}`,
       301
     );
   }
@@ -83,8 +82,8 @@ async function subredditPage(request, url) {
   if (data) {
     const name = data.children[0].data.subreddit_name_prefixed;
     // Redirect to nicely capitalised version, without any trailing bits
-    if (url.href !== `${ORIGIN}/${name}`) {
-      return Response.redirect(`${ORIGIN}/${name}`, 302);
+    if (url.pathname !== `/${name}`) {
+      return Response.redirect(`${url.origin}/${name}`, 302);
     }
     const html = `
       <!DOCTYPE html>
