@@ -51,14 +51,14 @@ async function handleRequest(request) {
       </head>
       <body>
         <main>
-          <h1 class="title">${name}</h1>
+          <h1>${name}</h1>
           <hr/>
           ${data.children
             .slice(0, 15)
             .map(
               ({ data }) => `
-            <div class="item">
-              <a class="item-title" ${
+            <div>
+              <a ${
                 !data.is_self
                   ? `href="${
                       data.secure_media?.reddit_video?.fallback_url ?? data.url
@@ -67,7 +67,7 @@ async function handleRequest(request) {
               }>
                 ${getTag(data)} ${data.title}
               </a>
-              <div class="item-meta">
+              <div>
               ${new Date(data.created_utc * 1000).toLocaleString([], {
                 month: "short",
                 weekday: "short",
@@ -78,7 +78,7 @@ async function handleRequest(request) {
               })}
               ${data.stickied ? "(pinned)" : ""}
               </div>
-              <div class="item-meta">${data.ups} upvotes</div>
+              <div>${data.ups} upvotes</div>
               ${
                 data.is_self
                   ? `
@@ -99,7 +99,7 @@ async function handleRequest(request) {
           `
             )
             .join("")}
-          <div class="end">Ok, stop reading reddit now and go for a walk :)</div>
+          <div>Ok, stop reading reddit now and go for a walk :)</div>
         </main>
       </body>`;
       return new Response(html, {
