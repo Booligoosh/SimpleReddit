@@ -33,12 +33,7 @@ async function handleRequest(request) {
     );
   }
   // 404 catch-all
-  return new Response("Not found", {
-    status: 404,
-    headers: {
-      "Content-Security-Policy": CSP,
-    },
-  });
+  return notFoundPage();
 }
 
 function homePage() {
@@ -78,73 +73,81 @@ async function subredditPage(request, url) {
     `https://www.reddit.com/r/${subreddit}.json`
   ).then((r) => r.json());
 
-  // Otherwise, it'll go to the 404 return near the end of the file
-  if (data) {
-    const name = data.children[0].data.subreddit_name_prefixed;
-    // Redirect to nicely capitalised version, without any trailing bits
-    if (url.pathname !== `/${name}`) {
-      return Response.redirect(`${url.origin}/${name}`, 302);
-    }
-    const html = `
-      <!DOCTYPE html>
-      <head>
-        <meta name="viewport" content= "width=device-width, initial-scale=1.0">
-        <title>${name} &bull; SimpleReddit</title>
-      </head>
-      <body>
-        <h1>${name}</h1>
-        <hr/>
-        ${data.children
-          .slice(0, 15)
-          .map(
-            ({ data }) => `
-              <a ${
-                !data.is_self
-                  ? `href="${
-                      data.secure_media?.reddit_video?.fallback_url ?? data.url
-                    }"`
-                  : ""
-              }>
-                ${getTag(data)} ${data.title}
-              </a>
-              <br>
-              ${new Date(data.created_utc * 1000).toLocaleString([], {
-                month: "short",
-                weekday: "short",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                timeZone: request.cf?.timezone,
-              })}
-              ${data.stickied ? "(pinned)" : ""}
-              <br>
-              ${data.ups} upvotes
-              ${
-                data.is_self
-                  ? `
-              <details>
-                <summary>Self text</summary>
-                ${data.selftext_html
-                  .replaceAll("&lt;", "<")
-                  .replaceAll("&gt;", ">")
-                  .replaceAll("&amp;", "&")}
-              </details>
-              `
-                  : ""
-              }
-            <hr/>`
-          )
-          .join("")}
-        Ok, stop reading reddit now and go for a walk :)
-      </body>`;
-    return new Response(html, {
-      headers: {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-cache",
-        "Content-Security-Policy": CSP,
-      },
-    });
+  if (!data) return notFoundPage();
+
+  const name = data.children[0].data.subreddit_name_prefixed;
+  // Redirect to nicely capitalised version, without any trailing bits
+  if (url.pathname !== `/${name}`) {
+    return Response.redirect(`${url.origin}/${name}`, 302);
   }
+  const html = `
+    <!DOCTYPE html>
+    <head>
+      <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+      <title>${name} &bull; SimpleReddit</title>
+    </head>
+    <body>
+      <h1>${name}</h1>
+      <hr/>
+      ${data.children
+        .slice(0, 15)
+        .map(
+          ({ data }) => `
+            <a ${
+              !data.is_self
+                ? `href="${
+                    data.secure_media?.reddit_video?.fallback_url ?? data.url
+                  }"`
+                : ""
+            }>
+              ${getTag(data)} ${data.title}
+            </a>
+            <br>
+            ${new Date(data.created_utc * 1000).toLocaleString([], {
+              month: "short",
+              weekday: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              timeZone: request.cf?.timezone,
+            })}
+            ${data.stickied ? "(pinned)" : ""}
+            <br>
+            ${data.ups} upvotes
+            ${
+              data.is_self
+                ? `
+            <details>
+              <summary>Self text</summary>
+              ${data.selftext_html
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                .replaceAll("&amp;", "&")}
+            </details>
+            `
+                : ""
+            }
+          <hr/>`
+        )
+        .join("")}
+      Ok, stop reading reddit now and go for a walk :)
+    </body>`;
+  return new Response(html, {
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-cache",
+      "Content-Security-Policy": CSP,
+    },
+  });
+}
+
+function notFoundPage() {
+  return new Response("Not found", {
+    status: 404,
+    headers: {
+      "Content-Security-Policy": CSP,
+    },
+  });
 }
 
 function getTag(data) {
