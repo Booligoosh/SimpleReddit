@@ -1,7 +1,7 @@
 name = "simplereddit"
 type = "javascript"
 
-account_id = ""
-workers_dev = true
-route = ""
-zone_id = ""
+account_id = "48df40c1aa92584981c77c02cdf375ac"
+workers_dev = false
+route = "https://simplereddit.ethan.link/*"
+zone_id = "68a394814d6cd79d15f00063a6381c23"
