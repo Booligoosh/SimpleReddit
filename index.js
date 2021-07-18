@@ -21,6 +21,9 @@ async function handleRequest(request) {
   // Favicon
   if (pathname === "/favicon.ico")
     return fetch("https://files.ethan.link/simplereddit.ico");
+  // Robots.txt
+  if (pathname === "/robots.txt")
+    return new Response("User-agent: *\nDisallow: /");
   // Subreddit pages
   if (pathname.startsWith("/r/")) return subredditPage(request, url);
   // Home page
