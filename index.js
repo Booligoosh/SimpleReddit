@@ -55,7 +55,7 @@ function homePage() {
           <button>Go to subreddit</button>
         </form>
         <br><br>
-        <p><small>Made by <a href="https://ethan.link" target="_blank">Ethan</a></small></p>
+        <p><small>Made by <a href="https://ethan.link" target="_blank">Ethan</a>, source code on <a href="https://github.com/Booligoosh/simplereddit">GitHub</a></small></p>
       </center>
     </body>`;
   return new Response(html, {
