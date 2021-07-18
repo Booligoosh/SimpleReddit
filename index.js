@@ -122,10 +122,12 @@ async function subredditPage(request, url) {
                 ? `
             <details>
               <summary>Self text</summary>
-              ${data.selftext_html
-                .replaceAll("&lt;", "<")
-                .replaceAll("&gt;", ">")
-                .replaceAll("&amp;", "&")}
+              ${
+                data.selftext_html
+                  ?.replaceAll("&lt;", "<")
+                  .replaceAll("&gt;", ">")
+                  .replaceAll("&amp;", "&") || ""
+              }
             </details>
             `
                 : ""
