@@ -50,14 +50,12 @@ async function handleRequest(request) {
         <title>${name} &bull; SimpleReddit</title>
       </head>
       <body>
-        <main>
-          <h1>${name}</h1>
-          <hr/>
-          ${data.children
-            .slice(0, 15)
-            .map(
-              ({ data }) => `
-            <div>
+        <h1>${name}</h1>
+        <hr/>
+        ${data.children
+          .slice(0, 15)
+          .map(
+            ({ data }) => `
               <a ${
                 !data.is_self
                   ? `href="${
@@ -67,7 +65,7 @@ async function handleRequest(request) {
               }>
                 ${getTag(data)} ${data.title}
               </a>
-              <div>
+              <br>
               ${new Date(data.created_utc * 1000).toLocaleString([], {
                 month: "short",
                 weekday: "short",
@@ -77,30 +75,25 @@ async function handleRequest(request) {
                 timeZone: request.cf?.timezone,
               })}
               ${data.stickied ? "(pinned)" : ""}
-              </div>
-              <div>${data.ups} upvotes</div>
+              <br>
+              ${data.ups} upvotes
               ${
                 data.is_self
                   ? `
               <details>
                 <summary>Self text</summary>
-                <div>
-                  ${data.selftext_html
-                    .replaceAll("&lt;", "<")
-                    .replaceAll("&gt;", ">")
-                    .replaceAll("&amp;", "&")}
-                </div>
+                ${data.selftext_html
+                  .replaceAll("&lt;", "<")
+                  .replaceAll("&gt;", ">")
+                  .replaceAll("&amp;", "&")}
               </details>
               `
                   : ""
               }
-            </div>
-            <hr/>
-          `
-            )
-            .join("")}
-          <div>Ok, stop reading reddit now and go for a walk :)</div>
-        </main>
+            <hr/>`
+          )
+          .join("")}
+        Ok, stop reading reddit now and go for a walk :)
       </body>`;
       return new Response(html, {
         headers: {
