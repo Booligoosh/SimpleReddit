@@ -47,7 +47,7 @@ function homePage() {
       <center>
         <br><br><br>
         <h1>SimpleReddit</h1>
-        <p>No distractions. No comments. No stylesheets. No JavaScript.</p>
+        <p>No distractions. No comments sections. No stylesheets. No JavaScript.</p>
         <p>Just an HTML-only Reddit client to stop you entering an internet time vortex.</p>
         <br><br>
         <form action="/form" method="get">
