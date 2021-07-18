@@ -1,3 +1,4 @@
+const ORIGIN = "https://simplereddit.ethan.link";
 const CSP =
   "default-src 'none'; img-src https://simplereddit.ethan.link/favicon.ico";
 
@@ -15,35 +16,77 @@ addEventListener("fetch", (event) => {
   );
 });
 
-/**
- * Many more examples available at:
- *   https://developers.cloudflare.com/workers/examples
- * @param {Request} request
- * @returns {Promise<Response>}
- */
 async function handleRequest(request) {
-  const ORIGIN = "https://simplereddit.ethan.link";
-
-  const { pathname, searchParams } = new URL(request.url);
-
-  if (pathname === "/favicon.ico") {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
+  // Favicon
+  if (pathname === "/favicon.ico")
     return fetch("https://files.ethan.link/simplereddit.ico");
+  // Subreddit pages
+  if (pathname.startsWith("/r/")) return subredditPage(request, url);
+  // Home page
+  if (pathname === "/") return homePage();
+  // Home page form submissions
+  if (pathname === "/form") {
+    return Response.redirect(
+      `${ORIGIN}/r/${url.searchParams.get("subreddit")}`,
+      301
+    );
   }
+  // 404 catch-all
+  return new Response("Not found", {
+    status: 404,
+    headers: {
+      "Content-Security-Policy": CSP,
+    },
+  });
+}
 
-  if (pathname.startsWith("/r/")) {
-    const subreddit = pathname.split("/")[2];
-    const { data } = await fetch(
-      `https://www.reddit.com/r/${subreddit}.json`
-    ).then((r) => r.json());
+function homePage() {
+  const html = `
+    <!DOCTYPE html>
+    <head>
+      <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+      <title>SimpleReddit</title>
+    </head>
+    <body>
+      <center>
+        <br><br><br>
+        <h1>SimpleReddit</h1>
+        <p>No distractions. No comments. No stylesheets. No JavaScript.</p>
+        <p>Just an HTML-only Reddit client to stop you entering an internet time vortex.</p>
+        <br><br>
+        <form action="/form" method="get">
+          r/<input name="subreddit" placeholder="Enter a subreddit name" autofocus required />
+          <button>Go to subreddit</button>
+        </form>
+        <br><br>
+        <p><small>Made by <a href="https://ethan.link" target="_blank">Ethan</a></small></p>
+      </center>
+    </body>`;
+  return new Response(html, {
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-cache",
+      "Content-Security-Policy": CSP,
+    },
+  });
+}
 
-    // Otherwise, it'll go to the 404 return near the end of the file
-    if (data) {
-      const name = data.children[0].data.subreddit_name_prefixed;
-      // Redirect to nicely capitalised version, without any trailing bits
-      if (request.url !== `${ORIGIN}/${name}`) {
-        return Response.redirect(`${ORIGIN}/${name}`, 302);
-      }
-      const html = `
+async function subredditPage(request, url) {
+  const subreddit = url.pathname.split("/")[2];
+  const { data } = await fetch(
+    `https://www.reddit.com/r/${subreddit}.json`
+  ).then((r) => r.json());
+
+  // Otherwise, it'll go to the 404 return near the end of the file
+  if (data) {
+    const name = data.children[0].data.subreddit_name_prefixed;
+    // Redirect to nicely capitalised version, without any trailing bits
+    if (url.href !== `${ORIGIN}/${name}`) {
+      return Response.redirect(`${ORIGIN}/${name}`, 302);
+    }
+    const html = `
       <!DOCTYPE html>
       <head>
         <meta name="viewport" content= "width=device-width, initial-scale=1.0">
@@ -95,38 +138,6 @@ async function handleRequest(request) {
           .join("")}
         Ok, stop reading reddit now and go for a walk :)
       </body>`;
-      return new Response(html, {
-        headers: {
-          "Content-Type": "text/html; charset=utf-8",
-          "Cache-Control": "no-cache",
-          "Content-Security-Policy": CSP,
-        },
-      });
-    }
-  }
-
-  if (pathname === "/") {
-    const html = `
-    <!DOCTYPE html>
-    <head>
-      <meta name="viewport" content= "width=device-width, initial-scale=1.0">
-      <title>SimpleReddit</title>
-    </head>
-    <body>
-      <center>
-        <br><br><br>
-        <h1>SimpleReddit</h1>
-        <p>No distractions. No comments. No stylesheets. No JavaScript.</p>
-        <p>Just an HTML-only Reddit client to stop you entering an internet time vortex.</p>
-        <br><br>
-        <form action="/form" method="get">
-          r/<input name="subreddit" placeholder="Enter a subreddit name" autofocus required />
-          <button>Go to subreddit</button>
-        </form>
-        <br><br>
-        <p><small>Made by <a href="https://ethan.link" target="_blank">Ethan</a></small></p>
-      </center>
-    </body>`;
     return new Response(html, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
@@ -135,20 +146,6 @@ async function handleRequest(request) {
       },
     });
   }
-
-  if (pathname === "/form") {
-    return Response.redirect(
-      `${ORIGIN}/r/${searchParams.get("subreddit")}`,
-      301
-    );
-  }
-
-  return new Response("Not found", {
-    status: 404,
-    headers: {
-      "Content-Security-Policy": CSP,
-    },
-  });
 }
 
 function getTag(data) {
