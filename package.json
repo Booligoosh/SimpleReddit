@@ -3,6 +3,7 @@
   "name": "simplereddit",
   "version": "1.0.0",
   "description": "A simple, HTML-only Reddit client",
+  "license": "CC0-1.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
