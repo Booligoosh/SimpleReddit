@@ -1,5 +1,6 @@
 const CSP =
   "default-src 'none'; img-src https://simplereddit.ethan.link/favicon.ico";
+const ITEMS_LIMIT = 20;
 
 addEventListener("fetch", (event) => {
   event.respondWith(
@@ -93,7 +94,7 @@ async function subredditPage(request, url) {
       <h1>${name}</h1>
       <hr/>
       ${data.children
-        .slice(0, 15)
+        .slice(0, ITEMS_LIMIT)
         .map(
           ({ data }) => `
           <${
