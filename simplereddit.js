@@ -115,7 +115,8 @@ async function subredditPage(request, url) {
               minute: "numeric",
               timeZone: request.cf?.timezone,
             })}
-            ${data.stickied ? "(pinned)" : ""} • ${data.ups} upvotes
+            ${data.stickied ? "(pinned)" : ""} •
+            ${data.ups} upvote${data.ups !== 1 ? "s" : ""}
             ${
               data.is_self
                 ? `
