@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "A simple, HTML-only Reddit client",
   "license": "CC0-1.0",
-  "main": "index.js",
+  "main": "simplereddit.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Booligoosh/SimpleReddit.git"
