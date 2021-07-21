@@ -175,6 +175,7 @@ function getTag(data) {
 }
 
 function formatCount(count) {
-  if (count < 1000) return count.toString();
-  else return Math.floor(count / 1000) + "k";
+  if (count >= 1000000) return Math.floor(count / 1000000) + "m";
+  if (count >= 1000) return Math.floor(count / 1000) + "k";
+  else return count.toString();
 }
