@@ -97,15 +97,17 @@ async function subredditPage(request, url) {
         .slice(0, ITEMS_LIMIT)
         .map(
           ({ data }) => `
-          <${
-            data.is_self
-              ? "u"
-              : `a href="${
-                  data.secure_media?.reddit_video?.fallback_url ?? data.url
-                }"`
-          }>
-              ${getTag(data)} ${data.title}
-            </${data.is_self ? "u" : "a"}>
+            <strong>
+              ${
+                !data.is_self
+                  ? `<a href="${
+                      data.secure_media?.reddit_video?.fallback_url ?? data.url
+                    }">`
+                  : ""
+              }
+                ${getTag(data)} ${data.title}
+              ${!data.is_self ? "</a>" : ""}
+            </strong>
             <br>
             ${new Date(data.created_utc * 1000).toLocaleString([], {
               month: "short",
