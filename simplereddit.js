@@ -60,6 +60,7 @@ function homePage() {
         </form>
         <br><br>
         <p><small>Made by <a href="https://ethan.link">Ethan</a>, source code on <a href="https://github.com/Booligoosh/SimpleReddit">GitHub</a></small></p>
+        <p><small><small>☕ <a href="https://www.buymeacoffee.com/Booligoosh">Buy Me A Coffee</a> (tip jar)</small></small></p>
       </center>
     </body>`;
   return new Response(html, {
