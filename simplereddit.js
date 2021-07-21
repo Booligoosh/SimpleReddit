@@ -91,7 +91,13 @@ async function subredditPage(request, url) {
       <title>${name} &bull; SimpleReddit</title>
     </head>
     <body>
-      <h1>${name}</h1>
+      <br>
+      <big><big><big>
+        <b>${name}</b>
+      </big></big></big>
+      <br>
+      ${formatCount(data.children[0].data.subreddit_subscribers)} members
+      <br><br>
       <hr/>
       ${data.children
         .slice(0, ITEMS_LIMIT)
@@ -166,4 +172,9 @@ function getTag(data) {
   // if (data.is_video) return "[video]"
   // if (data.domain === "i.redd.it") return "[image]"
   // return "[link]"
+}
+
+function formatCount(count) {
+  if (count < 1000) return count.toString();
+  else return Math.floor(count / 1000) + "k";
 }
