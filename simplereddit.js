@@ -108,14 +108,18 @@ async function subredditPage(request, url) {
           ({ data }) => `
             <strong>
               ${
-                !data.is_self
+                !data.is_self && !data.crosspost_parent_list?.[0]?.is_self
                   ? `<a href="${
                       data.secure_media?.reddit_video?.fallback_url ?? data.url
                     }">`
                   : ""
               }
                 ${getTag(data)} ${data.title}
-              ${!data.is_self ? "</a>" : ""}
+              ${
+                !data.is_self && !data.crosspost_parent_list?.[0]?.is_self
+                  ? "</a>"
+                  : ""
+              }
             </strong>
             <br>
             ${new Date(data.created_utc * 1000).toLocaleString([], {
@@ -129,12 +133,20 @@ async function subredditPage(request, url) {
             ${data.stickied ? "(pinned)" : ""} •
             ${data.ups} upvote${data.ups !== 1 ? "s" : ""}
             ${
-              data.is_self
+              data.crosspost_parent
+                ? `<br><em>Crossposted from ${data.crosspost_parent_list?.[0]?.subreddit_name_prefixed}</em>`
+                : ""
+            }
+            ${
+              data.is_self || data.crosspost_parent_list?.[0]?.is_self
                 ? `
             <details>
               <summary>Self text</summary>
               ${
-                data.selftext_html
+                (
+                  data.selftext_html ||
+                  data.crosspost_parent_list?.[0]?.selftext_html
+                )
                   ?.replaceAll("&lt;", "<")
                   .replaceAll("&gt;", ">")
                   .replaceAll("&amp;", "&") || ""
@@ -167,7 +179,7 @@ function notFoundPage() {
 }
 
 function getTag(data) {
-  if (data.is_self) return "📝";
+  if (data.is_self || data.crosspost_parent_list?.[0]?.is_self) return "📝";
   if (data.is_video) return "📽";
   if (["i.redd.it", "i.imgur.com"].includes(data.domain)) return "📸";
   return "🔗";
