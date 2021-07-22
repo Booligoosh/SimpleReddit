@@ -92,6 +92,8 @@ async function subredditPage(request, url) {
       <title>${name} &bull; SimpleReddit</title>
     </head>
     <body>
+      <small><a href="/">← Homepage</a></small>
+      <br>
       <br>
       <big><big><big>
         <b>${name}</b>
