@@ -45,6 +45,7 @@ function homePage() {
     <!DOCTYPE html>
     <head>
       <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+      <meta name="color-scheme" content="light dark">
       <title>SimpleReddit</title>
     </head>
     <body>
@@ -89,6 +90,7 @@ async function subredditPage(request, url) {
     <!DOCTYPE html>
     <head>
       <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+      <meta name="color-scheme" content="light dark">
       <title>${name} &bull; SimpleReddit</title>
     </head>
     <body>
