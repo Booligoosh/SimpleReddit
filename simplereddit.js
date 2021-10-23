@@ -105,6 +105,7 @@ async function subredditPage(request, url) {
       <br><br>
       <hr/>
       ${data.children
+        .filter(({ data }) => !data.title?.trim()?.endsWith("?"))
         .slice(0, ITEMS_LIMIT)
         .map(
           ({ data }) => `
